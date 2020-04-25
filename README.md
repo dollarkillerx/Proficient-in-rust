@@ -19,8 +19,9 @@ Proficient in rust 一个月精通rust
 ### 分支
 - master  index
 - day1    helloworld cargo包管理工具
-- day2    变量 常量 流程控制  循环 逻辑  (猜数字)
-- day3    语言基础
+- day2    猜数字 demo
+- day3    语言基础 (变量 常量 流程控制  循环 逻辑  函数)
+- day4    所有权
 
 ### Cargo
 https://lug.ustc.edu.cn/wiki/mirrors/help/rust-crates

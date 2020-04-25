@@ -18,4 +18,4 @@ Proficient in rust 一个月精通rust
 
 ### 分支
 - master  index
-- day 1  初步rust
+- day1   helloworld cargo包管理工具

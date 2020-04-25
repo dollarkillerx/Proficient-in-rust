@@ -1,27 +1,14 @@
-# Proficient-in-rust
-Proficient in rust 一个月精通rust
+# Slice
 
-### 一些约定
-- 每一个阶段为 一改 分支  
-- master 分支为 index
+### 简单切片
+``` 
+    let hello = &s[0..idx]; // 切片
+    // let hello = &s[0..=(idx-1)]; // 切片
+    // let hello = &s[..=(idx-1)]; // 切片
+    // let hello = &s[1..]; // 切片
+    // let hello = &s[..]; // 切片
 
-### 学习目标
-- rust 基本语法
-- socks5 实现
-- arm  mips 等IOT架构实现
-
-### 环境
-- idea2020.1 
-- Manjaro Linux
-- rust 1.43.0 (4fb7144ed 2020-04-20)
-
-
-### 分支
-- master  index
-- day1    helloworld cargo包管理工具
-- day2    猜数字 demo
-- day3    语言基础 (变量 常量 流程控制  循环 逻辑  函数)
-- day4    所有权  (所有权 借用 引用 堆栈 拷贝) `在任意给定时间，要么 只能有一个可变引用，要么 只能有多个不可变引用。` * 非常重要  
-- day5    Slice 类型
-### Cargo
-https://lug.ustc.edu.cn/wiki/mirrors/help/rust-crates
+    let a_list = [1,2,3,4,5,6,7,8,9,10];
+    let b = &a_list[..3];
+    println!("B: {:#?}  len: {}",b,b.len());
+```

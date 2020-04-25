@@ -1,32 +1,33 @@
-use std::io;
-use rand::Rng;
-use std::cmp::Ordering;
+// 1. 字符串slice 是String中的一部分值的引用
+// 2. 字面值就是slice
+// 3. 其它类型slice
 fn main() {
-    println!("猜猜看!!!");
-    let caiCai = rand::thread_rng().gen_range(0,100);
-   loop {
-       print!("输入你所猜所想: ");
-       let mut input = String::new();
+    test1();
+}
 
-       io::stdin().read_line(&mut input).
-           expect("蛤 你输入的啥子???");
+fn test1() {
+    let s = String::from("hello world");
+    let idx = t1(&s);
 
-       // to uint32
-       let inputUint: u32 = match input.trim().parse() {
-           Ok(num) => num,
-           Err(_) => continue,
-       };
+    let hello = &s[0..idx]; // 切片
+    // let hello = &s[0..=(idx-1)]; // 切片
+    // let hello = &s[..=(idx-1)]; // 切片
+    // let hello = &s[1..]; // 切片
+    // let hello = &s[..]; // 切片
+    println!("Hello idx:{} msg:{}",idx,hello);
 
-       println!("you Input: {}",inputUint);
+    let a_list = [1,2,3,4,5,6,7,8,9,10];
+    let b = &a_list[..3];
+    println!("B: {:#?}  len: {}",b,b.len());
+}
 
-       match inputUint.cmp(&caiCai) {
-           Ordering::Less => println!("Less"),
-           Ordering::Equal => {
-               println!("Equal");
-               break;
-           },
-           Ordering::Greater => println!("Greater"),
-       }
+fn t1(s:&String) -> usize {
+    let bytes = s.as_bytes(); // str to slice
 
-   }
+    for (i,&item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return i;
+        }
+    }
+    s.len()
 }

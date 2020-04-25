@@ -21,7 +21,7 @@ Proficient in rust 一个月精通rust
 - day1    helloworld cargo包管理工具
 - day2    猜数字 demo
 - day3    语言基础 (变量 常量 流程控制  循环 逻辑  函数)
-- day4    所有权
-
+- day4    所有权  (所有权 借用 引用 堆栈 拷贝) `在任意给定时间，要么 只能有一个可变引用，要么 只能有多个不可变引用。` * 非常重要  
+- day5    Slice 类型
 ### Cargo
 https://lug.ustc.edu.cn/wiki/mirrors/help/rust-crates

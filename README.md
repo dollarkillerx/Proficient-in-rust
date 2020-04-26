@@ -24,7 +24,7 @@ Proficient in rust 一个月精通rust
 - day4    所有权  (所有权 借用 引用 堆栈 拷贝) `在任意给定时间，要么 只能有一个可变引用，要么 只能有多个不可变引用。` * 非常重要  
 - day5    Slice 类型 (这个和go差不多都是{point,len,cap} 但是切片颗粒度有区别)
 - day6    结构体
-- day7    枚举
+- day7    枚举和模式匹配
 - day8    包管理
 - day9    集合
 - day10   错误

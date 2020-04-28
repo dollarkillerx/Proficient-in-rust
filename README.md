@@ -107,9 +107,54 @@ for i in &row {
 
 方法2：
     let keys = vec![String::from("Blue"),String::from("Red")];
-    let values = vec![20,10];
-    
-    let scores:HashMap<String,i32> = keys.iter().zip(values.iter()).collect();
+    let values= vec![20,10];
+
+    // let scores:HashMap<&String,&i32> = keys.iter().zip(values.iter()).collect();
     let scores:HashMap<_,_> = keys.iter().zip(values.iter()).collect();
+    for (k,v) in &scores {
+        println!("K: {} V:{}",k,v);
+    }
+
+危险的操作:
+    let key = String::from("Name");
+    let name = String::from("DollarKiller");
+    let mut s1:HashMap<&String,&String> = HashMap::new();
+
+    s1.insert(&key,&name);
+    for (k,v) in s1 {
+        println!("S1 K: {} V: {}",k,v);
+    }
+```
+
+### HashMap 骚操作
+``` 
+c.entry(String::from("c")).or_insert(10010);  // 如果不存在就插入  [default = 0 如果存在 返回的是当前元素的可变引用]
+
+for i in text.split_whitespace() {
+    let count = new_db.entry(i).or_insert(0);
+    *count +=1;
+}
+
+for (k,v) in new_db {
+    println!("key: {}  val: {}",k,v);
+}
+
+不存在就插入  存在 就返回其可变引用
+```
+
+### 小结
+``` 
+// 插入数据
+    let mut ssc = HashMap::new();
+    if let Some(i) = ssc.insert(String::from("a"),12) {
+        println!("Ssc: {}",i);
+    }else {
+        println!("key = a 不存在  进行插入");
+    }
+    if let Some(i) = ssc.insert(String::from("a"),13) {
+        println!("Ssc: {}",i);   // 如果存在 就插入新的返回旧的数据
+    }else {
+        println!("key = a 不存在  进行插入");
+    }
 
 ```

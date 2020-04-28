@@ -1,32 +1,26 @@
-use std::io;
-use rand::Rng;
-use std::cmp::Ordering;
 fn main() {
-    println!("猜猜看!!!");
-    let caiCai = rand::thread_rng().gen_range(0,100);
-   loop {
-       print!("输入你所猜所想: ");
-       let mut input = String::new();
+    test1();
+}
 
-       io::stdin().read_line(&mut input).
-           expect("蛤 你输入的啥子???");
+mod cat {
+    pub fn hello_world(tag: &String) {
+        print(&format!("Hello {}",tag));
+    }
 
-       // to uint32
-       let inputUint: u32 = match input.trim().parse() {
-           Ok(num) => num,
-           Err(_) => continue,
-       };
+    fn print(v: &String) {
+        println!("{}",v);
+    }
 
-       println!("you Input: {}",inputUint);
+    pub mod xi_xi {
+        pub fn hello_world(tag: &String) {
+            super::print(tag); // 调用父级别
+        }
+    }
+}
 
-       match inputUint.cmp(&caiCai) {
-           Ordering::Less => println!("Less"),
-           Ordering::Equal => {
-               println!("Equal");
-               break;
-           },
-           Ordering::Greater => println!("Greater"),
-       }
+fn test1() {
+    crate::cat::hello_world(&String::from("PPC"));  // 相对路径
+    cat::hello_world(&String::from("HhH"));         // 绝对路径
 
-   }
+    cat::xi_xi::hello_world(&String::from("那 那 那"));
 }

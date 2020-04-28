@@ -1,3 +1,6 @@
+use std::hash::Hash;
+use std::collections::HashMap;
+
 fn main() {
     test1();
 }

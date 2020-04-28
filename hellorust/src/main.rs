@@ -1,9 +1,23 @@
 use std::hash::Hash;
 use std::collections::HashMap;
+use mylib::factory::produce_refrigerator as b;
+use mylib::model_a as ma;
 
 fn main() {
     test1();
+    test2();
 }
+
+fn test2() {
+    println!();
+    // mylib::factory::produce_refrigerator::produce_re();
+    // produce_refrigerator::produce_re();
+    b::produce_re();
+
+    let aa = ma::modA::A::new_a();
+    aa.print_a();
+}
+
 
 mod cat {
     pub fn hello_world(tag: &String) {

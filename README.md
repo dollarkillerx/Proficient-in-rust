@@ -1,4 +1,27 @@
 #  包管理
+
+### run
+``` 
+cargo new --lib mylib  // 创建库
+```
+cargo 导入本地包
+``` 
+[dependencies]
+rand = "0.4.0"
+mylib = {path = "./mylib"}
+```
+创建一个模块 
+``` 
+src 下  
+- factory.rs
+- model_a.rs
+
+lib.rs 中内容
+pub mod factory;
+pub mod model_a; // mod 与文件名称一致
+```
+
+### base
 - use 关键字用来将路径引入作用域
 - pub 关键字使项变为公有
 - as 关键字用于将项引入作用域时进行重命名

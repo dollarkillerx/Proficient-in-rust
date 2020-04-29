@@ -1,11 +1,21 @@
+// extern crate crypto;
 use std::hash::Hash;
 use std::collections::HashMap;
 use mylib::factory::produce_refrigerator as b;
 use mylib::model_a as ma;
+use crypto::digest::Digest;
+use crypto::sha3::Sha3;
 
 fn main() {
     test1();
     test2();
+    test3();
+}
+
+fn test3() {
+    let mut hasher = Sha3::sha3_256();
+    hasher.input_str("Hello World");
+    println!("hash: {}",hasher.result_str())
 }
 
 fn test2() {

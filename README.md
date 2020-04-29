@@ -6,9 +6,15 @@ cargo new --lib mylib  // 创建库
 ```
 cargo 导入本地包
 ``` 
+[package]
+name = "foo"
+version = "0.1.0"
+authors = ["mark"]
+
 [dependencies]
-rand = "0.4.0"
-mylib = {path = "./mylib"}
+clap = "2.27.1" # 来自 crates.io
+rand = { git = "https://github.com/rust-lang-nursery/rand" } # 来自网上的仓库
+bar = { path = "../bar" } # 来自
 ```
 创建一个模块 
 ``` 

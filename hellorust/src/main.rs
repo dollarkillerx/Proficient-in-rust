@@ -1,4 +1,5 @@
-use 
-fn main() {
+use hellorust::animial::dog;
 
+fn main() {
+    dog::hello();
 }

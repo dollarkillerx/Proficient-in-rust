@@ -11,3 +11,5 @@ Cargo.lock
 .idea
 hellorust/target
 base
+
+minigrep/target

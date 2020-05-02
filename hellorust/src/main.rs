@@ -1,6 +1,6 @@
 use std::fs::File;
 use hellorust::*;
-// use easy_file::EasyFile;
+use easy_file::EasyFile;
 // use hellorust::EasyFile;
 
 fn main() {

@@ -51,3 +51,7 @@ impl EasyFile {
         Ok(result)
     }
 }
+
+pub mod a {
+
+}

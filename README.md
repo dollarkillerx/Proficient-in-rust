@@ -28,7 +28,9 @@ Proficient in rust 一个月精通rust
 - day8    包管理
 - day9    集合
 - day10   错误
-- day11   泛形,trait 与 生命周期
+- day11   泛形,
+- day11p  trait
+- day11pp 生命周期
 - day12   测试
 - day13   一个简单的小demo
 - day14   函数和闭包

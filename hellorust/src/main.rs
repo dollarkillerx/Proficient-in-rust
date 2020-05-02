@@ -1,32 +1,36 @@
-use std::io;
-use rand::Rng;
-use std::cmp::Ordering;
+use std::fs::File;
+use hellorust::*;
+// use easy_file::EasyFile;
+// use hellorust::EasyFile;
+
 fn main() {
-    println!("猜猜看!!!");
-    let caiCai = rand::thread_rng().gen_range(0,100);
-   loop {
-       print!("输入你所猜所想: ");
-       let mut input = String::new();
+    // test1();
+    // test2();
+    test3();
+}
 
-       io::stdin().read_line(&mut input).
-           expect("蛤 你输入的啥子???");
+fn test3() {
+    let c = EasyFile::new();
+    let data = match c.read_file("src/main.rs".parse().unwrap()) {
+        Ok(msg) => msg,
+        Err(e) => panic!("err: {:#?}",e),
+    };
 
-       // to uint32
-       let inputUint: u32 = match input.trim().parse() {
-           Ok(num) => num,
-           Err(_) => continue,
-       };
+    println!("Data: {}",data);
+}
 
-       println!("you Input: {}",inputUint);
+fn test2() {
+    let f = File::open("main.rs").expect("open file error");
+    // let f = match File::open("main.rs") {
+    //     Ok(c) => c ,
+    //     Err(e) => panic!("err: {:#?}",e),
+    // };
+}
 
-       match inputUint.cmp(&caiCai) {
-           Ordering::Less => println!("Less"),
-           Ordering::Equal => {
-               println!("Equal");
-               break;
-           },
-           Ordering::Greater => println!("Greater"),
-       }
-
-   }
+fn test1() {
+    let f = File::open("src/main.rs");
+    let r = match f {
+        Err(e) => panic!("err: {:#?}",e),
+        Ok(file) => file,
+    };
 }

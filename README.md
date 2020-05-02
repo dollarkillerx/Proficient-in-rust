@@ -1,43 +1,71 @@
-# Proficient-in-rust
-Proficient in rust 一个月精通rust
+# Rust
+### 错误类型
+- 可恢复错误
+    - 在可恢复错误通常代表向用户报告错误和重试操作是合理的  未找到文件 rust中使用Result<T,E>来实现
+- 不可恢复错误
+    - 在不可恢复错误是bug的同义词  入尝试访问超过数组结尾的位置。rust中通过panic! 实现
+    
+``` 
+fn main() {
+    panic!("crash heil")
+}
 
-### 一些约定
-- 每一个阶段为 一改 分支  
-- master 分支为 index
+RUST_BACKTRACE=1 cargo run  打印错误堆栈信息
+```
 
-### 学习目标
-- rust 基本语法
-- socks5 实现
-- arm  mips 等IOT架构实现
+demo:
+``` 
+use std::fs::File;
+fn main() {
+    let f = File::open("src/main.rs");
+    let r = match f {
+        Err(e) => panic!("err: {:#?}",e),
+        Ok(file) => file,
+    };
+}
 
-### 环境
-- idea2020.1 
-- Manjaro Linux
-- rust 1.43.0 (4fb7144ed 2020-04-20)
+// 简化
+    let f = File::open("main.rs").expect("open file error"); // 添加自己的提示
+    let f = File::open("main.rs").unwrap(); // 没有自己的提示版本
+    // let f = match File::open("main.rs") {
+    //     Ok(c) => c ,
+    //     Err(e) => panic!("err: {:#?}",e),
+    // };
+```
 
+#### 传播错误
+``` 
+    // pub fn read_file(self, file_path: String) -> Result<String,io::Error> {
+    //     let mut f = match File::open(file_path) {
+    //         Err(e) => return Err(e),
+    //         Ok(f) => f,
+    //     };
+    //
+    //     let mut data = String::new();
+    //     match f.read_to_string(&mut data) {
+    //         Err(e) => Err(e),
+    //         Ok(_) => Ok(data),
+    //     }
+    // }
 
-### 分支
-- master  index
-- day1    helloworld cargo包管理工具
-- day2    猜数字 demo
-- day3    语言基础 (变量 常量 流程控制  循环 逻辑  函数)
-- day4    所有权  (所有权 借用 引用 堆栈 拷贝) `在任意给定时间，要么 只能有一个可变引用，要么 只能有多个不可变引用。` * 非常重要  
-- day5    Slice 类型 (这个和go差不多都是{point,len,cap} 但是切片颗粒度有区别)
-- day6    结构体
-- day7    枚举和模式匹配
-- day8    包管理
-- day9    集合
-- day10   错误
-- day11   泛形,trait 与 生命周期
-- day12   测试
-- day13   一个简单的小demo
-- day14   函数和闭包
-- day15   Cargo
-- day16   智能指针
-- day17   无畏并发
-- day18   面向对象
-- day19   模式与结构
-- day20   高级特性
-- day22   web实战(虽然web很无趣)
-### Cargo
-https://lug.ustc.edu.cn/wiki/mirrors/help/rust-crates
+    // 简化版本
+    pub fn read_file(self, file_path: String) -> Result<String,io::Error> {
+        let mut f = File::open(file_path)?; // 如果出现问题就 返回
+
+        let mut data = String::new();
+        f.read_to_string(&mut data)?;
+        Ok(data)
+    }
+
+    // 简化版本2
+    pub fn read_file(self, file_path: String) -> Result<String,io::Error> {
+        let mut result = String::new();
+        File::open(file_path)?.read_to_string(&mut result)?;
+        Ok(result)
+    }
+```
+
+### 神魔时候用panic! ,神魔时候用Result
+- 1. 实例 代码原型 测试 用 panic!  unwarp expect
+- 2. 实际项目用Result
+

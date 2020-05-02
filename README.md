@@ -1,45 +1,247 @@
-# Proficient-in-rust
-Proficient in rust 一个月精通rust
+# Trait
+特征类是与Interface  (共享行为)
 
-### 一些约定
-- 每一个阶段为 一改 分支  
-- master 分支为 index
+简单实现
+```rust
+// 定义trait
+pub trait GetInformation {
+    fn get_name(&self) -> &String;
+    fn get_age(&self) -> u32;
+}
 
-### 学习目标
-- rust 基本语法
-- socks5 实现
-- arm  mips 等IOT架构实现
+// 实现
+pub struct Student {
+    pub name: String,
+    pub age: u32,
+}
 
-### 环境
-- idea2020.1 
-- Manjaro Linux
-- rust 1.43.0 (4fb7144ed 2020-04-20)
+impl Student {
+    fn new(name:String,age:u32) -> Student {
+        Student{ name,age }
+    }
 
+    fn hello(&self) {
+        println!("Hello World");
+    }
+}
 
-### 分支
-- master  index
-- day1    helloworld cargo包管理工具
-- day2    猜数字 demo
-- day3    语言基础 (变量 常量 流程控制  循环 逻辑  函数)
-- day4    所有权  (所有权 借用 引用 堆栈 拷贝) `在任意给定时间，要么 只能有一个可变引用，要么 只能有多个不可变引用。` * 非常重要  
-- day5    Slice 类型 (这个和go差不多都是{point,len,cap} 但是切片颗粒度有区别)
-- day6    结构体
-- day7    枚举和模式匹配
-- day8    包管理
-- day9    集合
-- day10   错误
-- day11   泛形,
-- day11p  trait
-- day11pp 生命周期
-- day12   测试
-- day13   一个简单的小demo
-- day14   函数和闭包
-- day15   Cargo
-- day16   智能指针
-- day17   无畏并发
-- day18   面向对象
-- day19   模式与结构
-- day20   高级特性
-- day22   web实战(虽然web很无趣)
-### Cargo
-https://lug.ustc.edu.cn/wiki/mirrors/help/rust-crates
+impl GetInformation for Student {
+    fn get_name(&self) -> &String {
+        &self.name
+    }
+
+    fn get_age(&self) -> u32 {
+        self.age
+    }
+}
+
+// trait 作为参数  // 必须要求item 拥有GetInformation 特征
+fn print_information(item: impl GetInformation) {
+    println!("name = {}",item.get_name());
+    println!("age = {}",item.get_age());
+    // item.hello()  这个是没有的  只能用GetInformation的方法
+}
+
+fn test1() {
+    let a = Student::new(String::from("aaa"),18);
+    // println!("name: {}  age: {}",a.get_name(),a.get_age());
+    print_information(a);
+}
+```
+
+#### 默认实现
+```rust
+trait Hello {
+    fn hello(&self) {  // 默认实现
+        println!("Hello World");
+    }
+}
+
+struct StA {
+
+}
+
+struct Stb {
+
+}
+
+impl Hello for StA {} // StA 采用了默认实现
+impl Hello for Stb {
+    fn hello(&self) {
+        println!("Hello Rust"); // StB 重写来默认实现
+    }
+}
+
+fn hello(item: impl Hello) {
+    item.hello();
+}
+
+fn test2() {
+    let a = StA{};
+    let b = Stb{};
+
+    hello(a);
+    hello(b);
+}
+```
+
+### trait bound 语法糖
+```rust
+// fn print_information(item: impl GetInformation) { // 直接作为参数
+fn print_information2<T: GetInformation> (item: &T) { // 使用trait bound 语法糖
+    println!("name = {}",item.get_name());
+    println!("age = {}",item.get_age());
+}
+
+fn print_all<T: GetInformation + Hello> (item: &T) {
+    item.hello();
+    item.get_age();
+    item.get_name();
+}
+
+fn print_all2<T> (item: &T)
+    where T: GetInformation + Hello
+{
+    item.hello();
+    item.get_age();
+    item.get_name();
+}
+
+fn hhh() -> impl Hello { // 返回一个特征
+    Student {
+        name: String::from("aaa"),
+        age:12,
+    }
+}
+
+fn test3() {
+    let a = Student::new(String::from("aaa"),18);
+    // print_all(a);
+    print_all(&a);
+    print_all2(&a);
+    print_information2(&a);
+    let b = hhh();
+    b.hello();
+}
+```
+trait 作为返回值 注意点:
+```rust
+fn new(b:bool) -> impl Hello {
+    if b {
+        return S1{};
+    }else {
+        return S2{};
+    }
+}
+
+虽然 S1 S2都实现来 Hello 但是 这个方法里面只能返回一种类型
+```
+
+### trait 有条件的实现方法
+```rust
+trait Hello {
+    fn hello(&self) {
+        println!("Hello Rust");
+    }
+}
+
+trait Nc {
+    fn get_name(&self) ->&String;
+}
+
+struct Ter {
+    name: String,
+    age: u8,
+}
+
+struct Student {
+    name: String,
+    age: u8,
+}
+
+struct People<T,U> {
+    ter: T,
+    student: U,
+}
+
+impl Nc for Student{
+    fn get_name(&self) -> &String {
+        &self.name
+    }
+}
+
+impl Hello for Student{}
+
+impl Nc for Ter {
+    fn get_name(&self) -> &String {
+        &self.name
+    }
+}
+
+impl Hello for Ter{}
+
+impl <T:Hello + Nc,U:Hello + Nc> People<T,U> {
+    fn new(stu:T,te:U) -> People<T,U> {
+        People{
+            ter:stu,
+            student:te,
+        }
+    }
+
+    fn run(&self) {
+        println!("A: {} B: {}",self.student.get_name(),self.ter.get_name());
+        self.student.hello();
+        self.ter.hello();
+    }
+}
+
+pub fn test5() {
+    let s1 = Ter{
+        name: String::from("ter"),
+        age:18,
+    };
+
+    let s2 = Student{
+        name: String::from("student"),
+        age:18,
+    };
+
+    let s3 = People::new(s1,s2);
+    s3.run();
+}
+```
+
+#### 套娃  对于实现trait 实现 特定trait
+```rust
+trait Agc {
+    fn get_name(&self) -> &String;
+}
+
+trait PrintName {
+    fn print_name(&self);
+}
+
+impl <T: Agc> PrintName for T {
+    fn print_name(&self) {
+        println!("pr: {}",self.get_name());
+    }
+}
+
+struct User {
+    name: String,
+}
+
+impl Agc for User {
+    fn get_name(&self) -> &String {
+        &self.name
+    }
+}
+
+pub fn test6() {
+    let u = User{
+        name: String::from("Acd"),
+    };
+
+    u.print_name();
+}
+```

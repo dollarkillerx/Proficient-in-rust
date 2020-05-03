@@ -45,3 +45,34 @@ pub fn add_one(x: i32) -> i32 {
     x + 1
 }
 ```
+
+### Crate 发布
+- 1. 创建Crates.io账户: 通过Github账户注册，并通过cargo login ××× 登录
+- 2. Cargo.toml添加描述
+``` 
+[package]
+name = "package_name"
+version = "0.1.0"  # version
+lecense = "MIT"    # lecense
+authors = ["dollarkillerx <adapawang@gmail.com>"]   # auth
+edition = "2018"
+description = "descript package"
+
+[dependencies]
+```
+- 3. 撤回版本
+``` 
+cargo yank --vers 0.1.0 # 撤回到指定版本
+```
+
+### 工作空间
+主目录Cargo.toml
+``` 
+[workspace]
+members = [
+    "adder",
+]
+
+cargo build  # build 该workspace 下所有项目
+cargo run -p adder # 指定运行改项目下某一个子项目
+```

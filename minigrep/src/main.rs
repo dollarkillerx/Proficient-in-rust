@@ -1,16 +1,25 @@
-use std::env;
+use minigrep::*;
+use std::process;
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-
-    // middleware
-    if args.len() != 3 {
-        println!("you inputs: {:?}",args); // [ 程序名,参数1,参数2,...]
-        panic!("please input: ./cmd query_key filename");
+    // init
+    let config = config::init_config();
+    let data :String;
+    match ioutil::read_file(config.filename) {
+        Ok(t) => {
+            data = t
+        },
+        Err(e) => {
+            println!("Open File Err: {}",e);
+            process::exit(1);
+        }
     }
 
-    let query = &args[1];
-    let filename = &args[2];
+    // search
+    let resp = ioutil::search(&data,&config.key);
 
-    println!("query key: {} filename: {}",query,filename);
+    for i in resp {
+        println!("find: {}",i);
+    }
 }
+

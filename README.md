@@ -1,45 +1,181 @@
-# Proficient-in-rust
-Proficient in rust 一个月精通rust
+# 无畏并发
 
-### 一些约定
-- 每一个阶段为 一改 分支  
-- master 分支为 index
+### 基础理论
+- 1. 进程是资源分配的最小单位 线程是CPU调度的最小单位
+- 2. 使用多线程时的问题:
+    - 1. 竞争状态: 多个线程以不一致的顺序访问资源或数据
+    - 2. 死锁: 两个线程互相等待对象停止使用其所拥有的资源 造成两者永久等待
+        - 栗子: A线程 手上有 1资源 2资源 需要得到3资源才会释放1,2  B线程 拥有3资源 需要得到1,2资源才会释放4
+- 3. 编程语言提供协程叫做绿色线程，如GO 在底层实现来M：N模型
+    - M个绿色线程(协程) 对应N个OS线程  但是 RUST 只提供1:1线程模型实现 即一改Rust线程对于一个Os线程
+    - 运行时代表二进制文件中包含对语言本身的提供代码，这些代码更具语言的不同可大可小，不过非汇编语言都会有一定数量的运行时代码  通常大家说一个语言"没有运行时“ 是值这个语言”运行时“很小  Rust,C都是几乎没有运行时
+    
+### easy dome test1
+``` 
+use std::thread;
+use std::time::Duration;
 
-### 学习目标
-- rust 基本语法
-- socks5 实现
-- arm  mips 等IOT架构实现
+pub fn test1() {
+    let s1 = thread::spawn(hello);
+    thread::spawn(hello2);
+    thread::spawn(||{
+        thread::sleep(Duration::from_secs(1));
+        panic!("Thread 3 Panic"); // 子线程Panic 主线程不会Panic
+    });
 
-### 环境
-- idea2020.1 
-- Manjaro Linux
-- rust 1.43.0 (4fb7144ed 2020-04-20)
+    for i in 1..10 {
+        println!("hi number {} from the spawned thread!", i);
+        thread::sleep(Duration::from_millis(1));
+    }
+
+    s1.join().unwrap();
+    println!("Over");
+}
+
+fn hello2() {
+    let mut i = 0;
+    loop {
+        if i < 1000 {
+            i += 1;
+            thread::sleep(Duration::from_millis(500));
+            println!("S2 i: {}",i);
+            continue;
+        }
+        break
+    }
+}
+
+fn hello() {
+    let mut i = 0;
+    loop {
+        if i < 1000 {
+            i += 1;
+            thread::sleep(Duration::from_millis(1));
+            println!("S1 i: {}",i);
+            continue;
+        }
+        break
+    }
+}
+```
+
+### 涉及作用域所有权 test2
+``` 
+use std::thread;
+use std::time::Duration;
+
+pub fn test2() {
+    let ips = vec!["0.0.0.0","1.1.1.1","2.2.2.2"];
+    let a = thread::spawn(move ||{
+        // for i in ips {
+        //     println!("Ic: {}",i);
+        // }
+        thread::sleep(Duration::from_secs(1));
+        println!("ips: {:?}",ips);
+        // rust 不知道ips 的生命周期长度
+        // 无法保证ips 始终有效   所有需要移交所有权给它
+    });
+
+    a.join().unwrap()
+}
+```
+
+### 消息传递 test3
+> Rust 实现消息传递并发的主要工具是通道。 由两部分组成 一改发送端 一该接受端。 
+> 发送 或则 接受端 任意一个被丢弃时 视作通道被关闭
+- 通道
+    - 1. 通过`mpsc::channel` 创建通道 mpsc 多个生产者 单一消费者
+    - 2. 通过`spmc::channel` 创建通道 spmc 一个生产者 多个消费者
+- 创建通道后返回发生者 和 消费者
+``` 
+let (tx,rx) = mpsc::channel();
+let (tx,rx) = spmc::channel();
+```
+demo: 
+``` 
+use std::sync::mpsc;
+use std::thread;
+
+pub fn test3() {
+    let (tx,rx) = mpsc::channel();
+    thread::spawn(move || {
+        let val = String::from("hi");
+
+        match tx.send(val) {
+            Ok(_) => println!("send success"),
+            Err(e) => println!("send err: {}",e),
+        }
+        // 发送 移交所有权
+    });
 
 
-### 分支
-- master  index
-- day1    helloworld cargo包管理工具
-- day2    猜数字 demo
-- day3    语言基础 (变量 常量 流程控制  循环 逻辑  函数)
-- day4    所有权  (所有权 借用 引用 堆栈 拷贝) `在任意给定时间，要么 只能有一个可变引用，要么 只能有多个不可变引用。` * 非常重要  
-- day5    Slice 类型 (这个和go差不多都是{point,len,cap} 但是切片颗粒度有区别)
-- day6    结构体
-- day7    枚举和模式匹配
-- day8    包管理
-- day9    集合
-- day10   错误
-- day11   泛形
-- day11p  trait
-- day11pp 生命周期
-- day12   测试
-- day13   一个简单的小demo
-- day14   函数和闭包
-- day15   Cargo
-- day16   智能指针
-- day17   无畏并发
-- day18   面向对象
-- day19   模式与结构
-- day20   高级特性
-- day22   web实战(虽然web很无趣)
-### Cargo
-https://lug.ustc.edu.cn/wiki/mirrors/help/rust-crates
+    let received = rx.recv().unwrap();
+    // 接受数据 获得所有权   recv() 如果 生产者全部死了 就会 返回错误  反之就会阻塞一直等待数据
+
+    println!("Get: {}",received);
+}
+```
+#### 注意
+- 发送者send 会返回一改Result<T,E>
+- 如果接受端被丢弃来 没有发送目标 此时发送会返回错误
+- 接受者recv会返回一改Result 当发送端被丢弃是 会返回一个错误值  反之一直等待数据
+- `recv()` 接受会阻塞等待  `try_recv()` 不会阻塞 立即返回
+
+``` 
+use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
+
+pub fn test4() {
+    let (tx,rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        for i in 0..10 {
+            tx.send(i).unwrap();
+            thread::sleep(Duration::from_millis(250));
+        }
+    });
+
+    loop {
+        match rx.recv() {
+            Ok(d) => println!("data: {}",d),
+            Err(e) => {
+                println!("err: {}",e);
+                break;
+            },
+        }
+    }
+
+}
+```
+
+#### mpsc demo
+``` 
+use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
+
+pub fn test5() {
+    let (tx,rx) = mpsc::channel();
+    // 增加一个生产者
+    let tx2 = mpsc::Sender::clone(&tx);
+
+    thread::spawn(move || {
+        for i in 0..99 {
+            tx.send(i).unwrap();
+            thread::sleep(Duration::from_millis(50));
+        }
+    });
+
+    thread::spawn(move || {
+        for i in 100..999 {
+            tx2.send(i).unwrap();
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
+
+    for i in rx {
+        println!("Resp: {}",i);
+    }
+}
+```

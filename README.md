@@ -38,6 +38,7 @@ Proficient in rust 一个月精通rust
 - day16   智能指针
 - day17   无畏并发
 - day18   面向对象
+- day18p  面向对象  小demo
 - day19   模式与结构
 - day20   高级特性
 - day22   web实战(虽然web很无趣)

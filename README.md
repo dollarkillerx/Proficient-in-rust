@@ -212,3 +212,14 @@ pub fn test6() {
     println!("Over: {}",*a.lock().unwrap())
 }
 ```
+## Send Sync trait test7
+有两个并发概念内嵌与语言中: `std::marker` 中的 `Synv` 和 `Send trait`
+- 通过Send 允许在线程间转移所有权
+    - Send 标记 trait 表示类型所有权可以在线程间传递  几乎所有Rust类型都是Send的 但是例外 如`Rc<T>` 不能Send的
+    - 任何完全由Send类型组成也会自动标记为Send
+- Sync 运行多线程访问
+    - 1. Sync标记 trait 表明一个实现Sync的类型可以安全的在多个线程中拥有其值的引用  即 对于任意类型T 如果&T(T的引用)是Send的话T就是Sync的  着意味着其引用就可以安全的发送到另一个线程
+    - 2. 智能指针 `Rc<T>` 也不是Sync的 出于其不是Send相同的原因 RefCell<T> 和Cell<T> 类型不是Sync的 RefCell<T> 在运行时所进行借用检查也不是线程安全的 Mutex<T> 是Sync的
+- 手动实现Send和Sync是不安全的
+    - 通常并不需要手动实现Send 和 Sync trait 因为由Send 和Sync的类型组成的类型 自动就是Send和Sync的 因为它们是标记trait 甚至都不需要实现方法  它们只是用来加强并发相关的不可变性的
+    

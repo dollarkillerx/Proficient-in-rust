@@ -1,32 +1,46 @@
-use std::io;
-use rand::Rng;
-use std::cmp::Ordering;
 fn main() {
-    println!("猜猜看!!!");
-    let caiCai = rand::thread_rng().gen_range(0,100);
-   loop {
-       print!("输入你所猜所想: ");
-       let mut input = String::new();
+    test1();
+    test2();
+    test3();
+}
 
-       io::stdin().read_line(&mut input).
-           expect("蛤 你输入的啥子???");
+fn test1_pt((x,y):(String,String)) {
+    println!("x: {},y: {}",x,y)
+}
 
-       // to uint32
-       let inputUint: u32 = match input.trim().parse() {
-           Ok(num) => num,
-           Err(_) => continue,
-       };
+fn test1() {
+    let a = (String::from("aa"),String::from("bb"));
 
-       println!("you Input: {}",inputUint);
+    test1_pt(a);
+}
 
-       match inputUint.cmp(&caiCai) {
-           Ordering::Less => println!("Less"),
-           Ordering::Equal => {
-               println!("Equal");
-               break;
-           },
-           Ordering::Greater => println!("Greater"),
-       }
+enum Ac {
+    Ac(String),
+    Nil,
+}
 
-   }
+fn test2() {
+    let a = Ac::Ac(String::from("AAAA"));
+    match &a {
+        Ac::Ac(c) => println!("c: {}",c),
+        Ac::Nil => println!("Nil"),
+    }
+}
+
+enum Message {
+    Hello{id: i32},
+}
+fn test3() {
+    let msg = Message::Hello {id:5};
+    match msg {
+        Message::Hello {id: id_va@ 3..=7} => {
+            println!("id_val: {}",id_va);
+        },
+        Message::Hello {id: id_va@ 10..20} => {
+            println!("id_val 20 @ 20: {}",id_va);
+        },
+        Message::Hello {id:x} => {
+            println!("x = {}",x)
+        }
+    }
 }

@@ -115,13 +115,13 @@ pub fn test3() {
     println!("Get: {}",received);
 }
 ```
-#### 注意
+#### 注意 
 - 发送者send 会返回一改Result<T,E>
 - 如果接受端被丢弃来 没有发送目标 此时发送会返回错误
 - 接受者recv会返回一改Result 当发送端被丢弃是 会返回一个错误值  反之一直等待数据
 - `recv()` 接受会阻塞等待  `try_recv()` 不会阻塞 立即返回
 
-``` 
+```rust
 use std::sync::mpsc;
 use std::thread;
 use std::time::Duration;
@@ -149,8 +149,8 @@ pub fn test4() {
 }
 ```
 
-#### mpsc demo
-``` 
+#### mpsc demo test5
+```rust
 use std::sync::mpsc;
 use std::thread;
 use std::time::Duration;
@@ -177,5 +177,38 @@ pub fn test5() {
     for i in rx {
         println!("Resp: {}",i);
     }
+}
+```
+
+## 共享内存  多所有权 test6
+这里会引入两个智能指针
+- `Mutex<T>` 提供多线程下内部可变型  类似与`RefCell<T>`
+- `Arc<T>` 提供多线程下共享  类似 `Rc<T>`
+- `RefCell<T>/Rc<T>` 是非线性安全的，`Mutex<T>/Arc<T>` 是线程安全的
+```rust
+use std::sync::Mutex;
+use std::sync::Arc;
+use std::thread;
+// use std::time::Duration;
+
+pub fn test6() {
+    let a = Arc::new(Mutex::new(0));
+    let mut li = vec![];
+    for _i in 0..100 {
+        let ic = Arc::clone(&a);
+        let th = thread::spawn(move || {
+            *ic.lock().unwrap() += 1;
+            // loop {
+            //     thread::sleep(Duration::from_millis(1))
+            // }
+        });
+        li.push(th);
+    }
+
+    for i in li {
+        i.join().unwrap()
+    }
+
+    println!("Over: {}",*a.lock().unwrap())
 }
 ```

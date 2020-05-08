@@ -41,6 +41,6 @@ Proficient in rust 一个月精通rust
 - day18p  面向对象  小demo
 - day19   模式与结构
 - day20   高级特性
-- day22   web实战(虽然web很无趣)
+- day21   web实战(虽然web很无趣)
 ### Cargo
 https://lug.ustc.edu.cn/wiki/mirrors/help/rust-crates

@@ -11,3 +11,4 @@ Cargo.lock
 .idea
 hellorust/target
 base
+my_server/target

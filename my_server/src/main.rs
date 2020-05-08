@@ -1,10 +1,3 @@
-# web实战(虽然web很无趣)
-###  webServer
-- tcp
-    - http
-
-### base demo
-```rust
 use std::net::{TcpListener,TcpStream};
 use std::io::{Write, Read};
 use std::{fs,thread};
@@ -60,9 +53,4 @@ fn handel(mut conn: TcpStream) {
 }
 
 // const A:&'static str = "sasdsadsad";
-```
 
-### 线程池实现
-```rust
-
-```

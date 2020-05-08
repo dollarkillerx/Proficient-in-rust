@@ -116,3 +116,68 @@ trait Add<RHS=Self> { // <默认类型参数>  RHS是一改泛型类型参数(ri
 }
 ```
 ## 完全限定语法
+``` 
+<a as XXX>::XX()
+```
+
+## 函数指针
+- 函数指针允许我们使用函数作为另一个函数的参数
+- 类型为fn， fn被称为函数指针  参数作为函数类似于闭包
+```rust
+pub fn test6() {
+    let a = 12;
+    println!("pa: {}",do_twice(add_one,a));
+}
+
+fn add_one(x: i32) -> i32 {
+    x + 1
+}
+
+fn do_twice(f: fn(i32) -> i32,val: i32) -> i32 {
+    f(val)
+}
+
+fn wapper_func<T>(t: T,v: i32) -> i32 
+    where T: Fn(i32) -> i32
+{
+    t(v)
+}
+```
+# 宏
+- 组成
+    - `macro_rules!` 申明宏
+    - 过程宏
+        - 1. 自定义宏`#[derive]` 在结构体 枚举等指定通过derive属性添加代码
+        - 2. 类属性宏,定义可用于任意项 的自定义属性
+        - 3. 类函数宏, 看起象函数作用为参数传递的Token
+- 函数和宏
+    - 宏是一种为写其他代码而写的代码方式，减少编码和维护性
+    - 一个函数标签必须声明函数里面参数个数和类型  宏只接受可变参数
+    - 宏定义复杂
+    - 调用宏之前 必须定义并将其引入作用域 而函数则可以在任意地方定义和调用
+#### 申明宏
+```rust
+#[macro_export]
+macro_rules! my_vec {
+    ($($x: expr),*) => { // expr 表达式 * 0个或则1个
+        {
+            let mut temp_vec = Vec::new();
+            $(
+                temp_vec.push($x);
+            )*
+            temp_vec
+        }
+    };
+}
+
+pub fn test7() {
+    let c = my_vec![1,2,3,4,5];
+    for i in c {
+        println!("c: {}",i);
+    }
+}
+```  
+### 过程宏
+```rust
+
+```

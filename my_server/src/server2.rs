@@ -10,17 +10,20 @@ pub fn test_server2() -> std::io::Result<()> {
 
     for conn in listen.incoming() {
         loop {
-            let mut c = Arc::clone(&limit).lock().unwrap();
-            if *c > 20 {
-                *c += 1;
+            let mut c = limit.lock().unwrap();
+            if *c > 3 {   // 设置 limit 长度
+                println!("水池满了 等待...");
                 thread::sleep(Duration::from_millis(50));
                 continue;
             }else {
-                thread::spawn(move ||{
-                    handle_func(conn.unwrap(),Arc::clone(&limit));
+                *c += 1;
+                let c = Arc::clone(&limit);
+                thread::spawn( move ||{
+                    handle_func(conn.unwrap(),c);
                 });
                 break;
             }
+
         }
     }
 
@@ -44,6 +47,6 @@ fn handle_func(mut conn: TcpStream,limit: Arc<Mutex<i32>>) {
         let resp_data = b"HTTP/1.1 404 NOT FUND\r\n\r\n 404";
         conn.write(resp_data).unwrap();
     }
-
+    thread::sleep(Duration::from_secs(20));
     *limit.lock().unwrap() += -1;
 }

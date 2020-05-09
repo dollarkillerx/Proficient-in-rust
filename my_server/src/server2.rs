@@ -10,8 +10,9 @@ pub fn test_server2() -> std::io::Result<()> {
 
     for conn in listen.incoming() {
         loop {
-            if *limit.lock().unwrap() > 20 {
-                *limit.lock().unwrap() += 1;
+            let mut c = Arc::clone(&limit).lock().unwrap();
+            if *c > 20 {
+                *c += 1;
                 thread::sleep(Duration::from_millis(50));
                 continue;
             }else {

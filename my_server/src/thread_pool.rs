@@ -18,8 +18,8 @@ impl Work {
                 match message {
                     Message::Job(job) => {
                         println!("Worker {} receive a job",id);
-                        // job.call_box();
                         job();
+                        // job.call_box();
                     },
                     Message::Terminate => {
                         println!("Worker {} terminate",id);
@@ -36,6 +36,7 @@ impl Work {
 }
 
 type Job = Box<dyn FnOnce() + Send + 'static>;
+// type Job = Box<dyn FnBox + Send + 'static>;
 
 trait FnBox {
     fn call_box(self: Box<Self>);

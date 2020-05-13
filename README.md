@@ -42,5 +42,11 @@ Proficient in rust 一个月精通rust
 - day19   模式与结构
 - day20   高级特性
 - day21   web实战(虽然web很无趣)
+
+### Rust 异步编程
+- day22 async_await
+##### 参考文献
+- https://learnku.com/docs/async-book/2018/translation-notes/4798
+- https://rustcc.cn/article?id=e6d50145-4bc2-4f1e-84da-c39c8217640b
 ### Cargo
 https://lug.ustc.edu.cn/wiki/mirrors/help/rust-crates

@@ -1,28 +1,39 @@
 use futures::executor::block_on;
-use std::thread;
-use std::time::Duration;
 
-async fn hello_world() {
-    println!("Hello World");
+#[derive(Debug)]
+struct Song {
+
 }
 
-async fn learn_and_sing() {
-    let _song = learn_song().await; // 等待 learn_song 运行结束
+async fn learn_song() -> Song {
+    println!("learn song");
+    Song{}
 }
 
-async fn learn_song() {
-    thread::sleep(Duration::from_millis(5000));
-    println!("aaaaa")
+async fn sing_song(song: Song) {
+    println!("Sing song, {:?}",song);
+}
+
+async fn dance() {
+    println!("dance");
+}
+
+async fn lear_and_sing() {
+    let song = learn_song().await;
+    sing_song(song).await;
 }
 
 async fn async_main() {
-    let f1 = learn_and_sing();
-    let f2 = hello_world();
+    let f1 = lear_and_sing();
+    let f2 = dance();
 
-    futures::join!(f1,f2); // futures 等待这两个future运行结束
+    futures::join!(f1,f2); // await 批量的Future
 }
 
 fn main() {
-    block_on(async_main());
-    println!("Hello, world!");
+    block_on(async_main())
+
+    // let song = block_on(learn_song());
+    // block_on(sing_song(song));
+    // block_on(dance());
 }

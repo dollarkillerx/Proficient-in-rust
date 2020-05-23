@@ -47,6 +47,11 @@ Proficient in rust 一个月精通rust
 ### Rust 异步编程
 - day22 async_await
 - day23 async_demo
+
+## pro 一些内容模糊的章节的补充
+- pro1 trait
+
+
 ##### 参考文献
 - https://learnku.com/docs/async-book/2018/translation-notes/4798
 - https://rustcc.cn/article?id=e6d50145-4bc2-4f1e-84da-c39c8217640b

@@ -33,6 +33,13 @@ fn hello2(c: &dyn Hello) { // dyn  动态分发
     c.hello();
 }
 
+struct Us {}
+impl Us {
+    fn hello(&self,c: impl Hello) {
+        c.hello();
+    }
+}
+
 fn main() {
     let (a,b,c) = (Us1,Us2,Us3);
     hello1(a);
@@ -44,8 +51,17 @@ fn main() {
     hello2(&c);
     let (a,b,c) = (Us1,Us1,Us3);
 
-    let c : Vec<dyn Hello> = vec![a,b];
+    // let c : Vec<Box<Hello>> = vec![Box::from(a),Box::from(b)];
+    // let c : Vec<Box<Hello>> = vec![Box::from(a),Box::from(b),Box::from(c)];
+    let c : Vec<Box<dyn Hello>> = vec![Box::from(a), Box::from(b), Box::from(c)]; // trait 特征类型 无法知道其大小 只有用Box 等来装
+    // let c = vec![a,b,c];
     println!("c: {}",c.len());
+
+    let (a,b,c) = (Us1,Us1,Us3);
+    let u = Us{};
+    u.hello(a);
+    u.hello(b);
+    u.hello(c);
 
     println!("Hello, world!");
 }

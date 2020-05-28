@@ -51,7 +51,7 @@ Proficient in rust 一个月精通rust
 ## pro 一些内容模糊的章节的补充
 - pro1 trait
 - pro2 生命周期
-
+- pro3 异步代码中的阻塞操作
 ##### 参考文献
 - https://learnku.com/docs/async-book/2018/translation-notes/4798
 - https://rustcc.cn/article?id=e6d50145-4bc2-4f1e-84da-c39c8217640b

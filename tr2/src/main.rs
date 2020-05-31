@@ -40,6 +40,8 @@ impl Us {
     }
 }
 
+
+
 fn main() {
     let (a,b,c) = (Us1,Us2,Us3);
     hello1(a);
@@ -62,6 +64,8 @@ fn main() {
     u.hello(a);
     u.hello(b);
     u.hello(c);
+
+
 
     println!("Hello, world!");
 }
